@@ -10,8 +10,9 @@ Requirements:
   
   
 Change the KeyList.py to keys, which you want to simuate.
-How it works:
-  PyGame get signals from GamePad and collect this signals into array (function get()). 
-  Then, function pushVirtualKey(K) return string value of buttons from gamepad, which was pressed.
-  And the end - function pushMultiply(keysSend) emulate pressing and unpressing the button with accordingly with data from KeyList.py
+
+  How it works:
+    PyGame get signals from GamePad and collect this signals into array (function get()). 
+    Then, function pushVirtualKey(K) return string value of buttons from gamepad, which was pressed.
+    And the end - function pushMultiply(keysSend) emulate pressing and unpressing the button with accordingly with data from KeyList.py
   
