@@ -1,12 +1,7 @@
-"""
-function get() - I will spiz*il it from http://yameb.blogspot.ru/2013/01/gamepad-input-in-python.html
-keyboradda to send keyboard - write to myself
-"""
-
 import pygame, keyboard, time
-from KeyList import keyList
 
 KEY_PRESSED = []
+keyList = {}
 
 pygame.init()
 j = pygame.joystick.Joystick(0)
@@ -15,6 +10,22 @@ j.init()
 print 'Send here CTRL+C, or CTR+D, or cose the window to exit'
 print 'Initialized Joystick : %s' % j.get_name()
 
+###--- get list of keys from KeyList.txt
+def parseKeyList():
+    global keyList
+    listTXT = open('KeyList.txt', 'r')
+    line = listTXT.readline()
+    while line != '':
+        line = listTXT.readline()
+        if not '#' in line:
+            buttons = line.split(":")
+            if len(buttons) == 2:
+                keyList[buttons[0]] = buttons[1].replace('\n','')
+    listTXT.close()
+            
+    
+
+##----get string with buttons from GamePad
 def get():
     out = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     it = 0 #iterator
@@ -30,28 +41,29 @@ def get():
         it+=1
     return out
 
+
 def pushVirtualKey(K):
 	RETURN = []
 	#left stick
-	if K[0] < -0.5:
+	if K[0] < -0.9:
 		RETURN.append('LL')
-	if K[0] > 0.5:
+	if K[0] > 0.9:
 		RETURN.append('LR')
-	if K[1] < -0.5:
+	if K[1] < -0.9:
 		RETURN.append('LU')
-	if K[1] > 0.5:
+	if K[1] > 0.9:
 		RETURN.append('LD')
 	if K[14] == 1:
 		RETURN.append('L3')
 		
 	#right stick
-	if K[2] < -0.5:
+	if K[2] < -0.9:
 		RETURN.append('RL')
-	if K[2] > 0.5:
+	if K[2] > 0.9:
 		RETURN.append('RR')
-	if K[3] < -0.5:
+	if K[3] < -0.9:
 		RETURN.append('RU')
-	if K[3] > 0.5:
+	if K[3] > 0.9:
 		RETURN.append('RD')
 	if K[15] == 1:
 		RETURN.append('R3')
@@ -83,90 +95,33 @@ def pushVirtualKey(K):
 		RETURN.append('start')  
 
 	return RETURN
-        
- 
-   
-   
-def push(key):	
-	time.sleep(0.03)
-	global KEY_PRESSED
-	if key == None: 
-		print 'NONE'
-		##release all buttons
-		for Keys in KEY_PRESSED:
-			pass
-			keyboard.release(keyList[Keys])
-		KEY_PRESSED = []
-		#return 0
-		
-	
-	elif not(key in KEY_PRESSED):
-		print key		
-		
-		KEY_PRESSED.append(key)
-		try:			
-			keyboard.press(keyList[key])
-		except:
-			print '***ERROR IN :'+key+' '+keyList[key]
-	#else:
-#		KEY_PRESSED.remove(key)
-#		keyboard.release(keyList[key])
-	
-	
-	##new key - need release other
-	elif not(key in KEY_PRESSED):
-		KEY_PRESSED = []
-		keyboard.press(keyList[key])
-		
-	print KEY_PRESSED
-	
-	
+
+
 def pushMultiply(keysSend):
 	time.sleep(0.01)
 	global KEY_PRESSED
-	#print keysSend
-	## emulate mouse move in R-stick
-	'''for S in keysSend:
-			key = keyList[S]
-			if key == 'MouseL':
-				pyautogui.moveRel(-10)
-			if key == 'MouseR':
-				pyautogui.moveRel(10)
-			if key == 'MouseU':
-				pyautogui.moveRel(0,-10)
-			if key == 'MouseD':
-				pyautogui.moveRel(0, 10)
-	'''
+
 	
 	### if button unpressed
 	for K in KEY_PRESSED:
-		if not(K in keysSend): # and not (K in ['RL', 'RU', 'RR', 'RD']):
+		if not(K in keysSend): 
 			KEY_PRESSED.remove(K)
 			keyboard.release(keyList[K])
 	
 	### if button pressed first
 	for S in keysSend:
-		if not(S in KEY_PRESSED): #and not (S in ['RL', 'RU', 'RR', 'RD']):
+		if not(S in KEY_PRESSED): 
 			KEY_PRESSED.append(S)
 			keyboard.press(keyList[S])
-##		else:
-##			key = keyList[S]
-##			if key == 'MouseL':
-##				pyautogui.moveRel(-10)
-##			if key == 'MouseR':
-##				pyautogui.moveRel(10)
-##			if key == 'MouseU':
-##				pyautogui.moveRel(0,-10)
-##			if key == 'MouseD':
-##				pyautogui.moveRel(0, 10)
-			
 
-		
-		
-			
-			
+
+##------------ Initialie KeyList
+parseKeyList()
+
+##---------------start listen the gamepad and emulate keyboard
 while True:
    #print get()
    #print pushVirtualKey(get())
    #push(pushVirtualKey(get()))
    pushMultiply(pushVirtualKey(get()))
+
