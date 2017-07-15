@@ -8,10 +8,10 @@ keyList = {
 'L3':'X',
 
 ##right stick
-'RL':'MouseL',
-'RR':'MouseR',
-'RU':'MouseU',
-'RD':'MouseD',
+'RL':'page up',
+'RR':'page down',
+'RU':'X',
+'RD':'Y',
 'R3':'Backspace',
 
 'Y':'1',
